@@ -3,7 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Page Not Found</title>
+  <title>Page Not Found - Urban Photo Hunts</title>
+  <!-- Redirect to index with the URL -->
+  <script>
+    const segmentCount = 1; // For /urban-ph/ this is 1
+    const location = window.location;
+    const url = location.href;
+    const pathSegments = location.pathname.slice(1).split('/');
+    const repo = '/' + pathSegments.slice(0, segmentCount).join('/') + '/';
+    const restOfPath = pathSegments.slice(segmentCount).join('/');
+    const redirectTo = repo + '?p=/' + restOfPath;
+    
+    // Redirect with paths as query parameters
+    window.location.replace(redirectTo + location.hash);
+  </script>
   <style>
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -36,28 +49,26 @@
       font-family: monospace;
     }
   </style>
-  <script>
-    // This script will help debug path issues
-    window.onload = function() {
-      const debugInfo = document.getElementById('path-info');
-      debugInfo.innerHTML = `
-        <p>Current pathname: ${window.location.pathname}</p>
-        <p>Current href: ${window.location.href}</p>
-        <p>Base URL: ${document.baseURI}</p>
-      `;
-    }
-  </script>
 </head>
 <body>
   <div class="container">
     <h1>404 - Page Not Found</h1>
-    <p>Oops! The page you are looking for might have been removed or is temporarily unavailable.</p>
-    <p><a href="/urban-ph/">Go back to homepage</a></p>
+    <p>Redirecting to home page...</p>
+    <p>If you're not redirected automatically, <a href="/urban-ph/">click here</a> to go to the homepage.</p>
     
     <div class="debug">
       <h3>Debug Information:</h3>
       <div id="path-info"></div>
     </div>
   </div>
+  
+  <script>
+    // This script will help debug path issues
+    document.getElementById('path-info').innerHTML = `
+      <p>Current pathname: ${window.location.pathname}</p>
+      <p>Current href: ${window.location.href}</p>
+      <p>Base URL: ${document.baseURI}</p>
+    `;
+  </script>
 </body>
 </html>

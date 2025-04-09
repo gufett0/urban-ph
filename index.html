@@ -5,7 +5,21 @@
     <link rel="icon" type="image/svg+xml" href="/urban-ph/camera-icon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Urban Photo Hunts</title>
-    <script type="module" crossorigin src="/urban-ph/assets/index-BhB4_0iB.js"></script>
+    <!-- SPA redirect script for GitHub Pages -->
+    <script type="text/javascript">
+      // Handle direct navigation to routes in GitHub Pages
+      (function(l) {
+        if (l.search[1] === '/' ) {
+          var decoded = l.search.slice(1).split('&').map(function(s) { 
+            return s.replace(/~and~/g, '&')
+          }).join('?');
+          window.history.replaceState(null, null,
+              l.pathname.slice(0, -1) + decoded + l.hash
+          );
+        }
+      }(window.location))
+    </script>
+    <script type="module" crossorigin src="/urban-ph/assets/index-BPgW72HR.js"></script>
     <link rel="stylesheet" crossorigin href="/urban-ph/assets/index-DPx2PjUT.css">
   </head>
   <body>
