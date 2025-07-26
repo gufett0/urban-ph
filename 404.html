@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 - Not Found | Urban pH</title>
+  <script>
+    // Single Page Apps for GitHub Pages
+    // https://github.com/rafgraph/spa-github-pages
+    // This script takes the current URL and converts the path and query
+    // parameters into just a query parameter that GitHub Pages can handle
+    const pathSegmentsToKeep = 1; // Keeps /urban-ph/ in the path
+    
+    const l = window.location;
+    const url = l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '');
+    const path = l.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/') + '/';
+    
+    l.replace(
+      url + path + '?' +
+      (l.pathname.slice(path.length) || '') +
+      (l.search ? '&' + l.search.slice(1) : '') +
+      l.hash
+    );
+  </script>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+    
+    .glitch-container {
+      position: fixed;
+      inset: 0;
+      background: #000000;
+      z-index: 99999;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    /* Background noise patterns */
+    .noise-bg {
+      position: absolute;
+      inset: 0;
+      opacity: 0.3;
+      background-image: 
+        linear-gradient(45deg, #333 25%, transparent 25%), 
+        linear-gradient(-45deg, #333 25%, transparent 25%), 
+        linear-gradient(45deg, transparent 75%, #333 75%), 
+        linear-gradient(-45deg, transparent 75%, #333 75%);
+      background-size: 4px 4px;
+      background-position: 0 0, 0 2px, 2px -2px, -2px 0px;
+      animation: glitchMove 0.3s infinite linear;
+    }
+    
+    /* Chaos overlay */
+    .chaos-overlay {
+      position: absolute;
+      inset: 0;
+      opacity: 0.2;
+      background: 
+        radial-gradient(circle at 20% 80%, #fff 1px, transparent 1px), 
+        radial-gradient(circle at 80% 20%, #fff 1px, transparent 1px);
+      background-size: 15px 15px, 25px 25px;
+      animation: chaosMove 0.2s infinite ease-in-out;
+    }
+    
+    /* Scan lines */
+    .scan-lines {
+      position: absolute;
+      inset: 0;
+      opacity: 0.15;
+      background: repeating-linear-gradient(0deg, transparent, transparent 2px, #fff 2px, #fff 4px);
+      animation: scanLines 0.1s infinite linear;
+    }
+    
+    /* Main 404 text */
+    .glitch-404 {
+      position: relative;
+      font-size: 6rem;
+      font-weight: bold;
+      color: white;
+      text-shadow: 2px 0 #ff0000, -2px 0 #00ffff, 0 2px #ffff00, 0 -2px #ff00ff;
+      animation: textGlitch 0.15s infinite;
+      margin-bottom: 2rem;
+    }
+    
+    .glitch-404 .layer1 {
+      position: absolute;
+      top: 0;
+      left: 0;
+      color: #ff0000;
+      opacity: 0.5;
+      animation: glitchShift1 0.2s infinite;
+      clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+    }
+    
+    .glitch-404 .layer2 {
+      position: absolute;
+      top: 0;
+      left: 0;
+      color: #00ffff;
+      opacity: 0.5;
+      animation: glitchShift2 0.25s infinite;
+      clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%);
+    }
+    
+    /* Error message */
+    .error-message {
+      color: #fff;
+      font-size: 1.5rem;
+      margin-bottom: 2rem;
+      text-align: center;
+      animation: textFlicker 0.5s infinite ease-in-out;
+    }
+    
+    /* Navigation links */
+    .nav-links {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    
+    .glitch-link {
+      color: #fff;
+      text-decoration: none;
+      padding: 0.8rem 1.5rem;
+      border: 2px solid #fff;
+      background: transparent;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .glitch-link:hover {
+      color: #000;
+      background: #fff;
+      animation: linkGlitch 0.3s ease-in-out;
+    }
+    
+    .glitch-link:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.5s;
+    }
+    
+    .glitch-link:hover:before {
+      left: 100%;
+    }
+    
+    /* Random glitch blocks */
+    .glitch-block {
+      position: absolute;
+      background: white;
+      opacity: 0.1;
+    }
+    
+    .block1 { left: 10%; top: 20%; width: 80px; height: 3px; animation: randomFlicker 0.3s infinite; }
+    .block2 { left: 60%; top: 10%; width: 60px; height: 4px; animation: randomFlicker 0.4s infinite; }
+    .block3 { left: 30%; top: 70%; width: 100px; height: 2px; animation: randomFlicker 0.2s infinite; }
+    .block4 { left: 80%; top: 50%; width: 40px; height: 5px; animation: randomFlicker 0.5s infinite; }
+    .block5 { left: 5%; top: 80%; width: 90px; height: 3px; animation: randomFlicker 0.3s infinite; }
+    .block6 { left: 70%; top: 30%; width: 70px; height: 4px; animation: randomFlicker 0.6s infinite; }
+    
+    /* Animations */
+    @keyframes glitchMove {
+      0% { transform: translate(0, 0); }
+      20% { transform: translate(-2px, 2px); }
+      40% { transform: translate(-2px, -2px); }
+      60% { transform: translate(2px, 2px); }
+      80% { transform: translate(2px, -2px); }
+      100% { transform: translate(0, 0); }
+    }
+    
+    @keyframes chaosMove {
+      0% { transform: translate(0, 0) rotate(0deg); }
+      25% { transform: translate(-1px, 1px) rotate(1deg); }
+      50% { transform: translate(1px, -1px) rotate(-1deg); }
+      75% { transform: translate(-1px, -1px) rotate(0.5deg); }
+      100% { transform: translate(0, 0) rotate(0deg); }
+    }
+    
+    @keyframes scanLines {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(4px); }
+    }
+    
+    @keyframes textGlitch {
+      0% { 
+        transform: translate(0); 
+        filter: hue-rotate(0deg);
+      }
+      10% { 
+        transform: translate(-2px, 2px); 
+        filter: hue-rotate(90deg);
+      }
+      20% { 
+        transform: translate(-4px, -2px); 
+        filter: hue-rotate(180deg);
+      }
+      30% { 
+        transform: translate(4px, 2px); 
+        filter: hue-rotate(270deg);
+      }
+      40% { 
+        transform: translate(2px, -2px); 
+        filter: hue-rotate(360deg);
+      }
+      50% { 
+        transform: translate(-2px, 4px); 
+        filter: hue-rotate(0deg);
+      }
+      60% { 
+        transform: translate(-4px, 0px); 
+        filter: hue-rotate(90deg);
+      }
+      70% { 
+        transform: translate(4px, -4px); 
+        filter: hue-rotate(180deg);
+      }
+      80% { 
+        transform: translate(-2px, -2px); 
+        filter: hue-rotate(270deg);
+      }
+      90% { 
+        transform: translate(2px, 4px); 
+        filter: hue-rotate(360deg);
+      }
+      100% { 
+        transform: translate(0); 
+        filter: hue-rotate(0deg);
+      }
+    }
+    
+    @keyframes glitchShift1 {
+      0% { transform: translate(0, 0); }
+      20% { transform: translate(2px, 0); }
+      40% { transform: translate(-2px, 0); }
+      60% { transform: translate(0, 2px); }
+      80% { transform: translate(0, -2px); }
+      100% { transform: translate(0, 0); }
+    }
+    
+    @keyframes glitchShift2 {
+      0% { transform: translate(0, 0); }
+      15% { transform: translate(-3px, 0); }
+      30% { transform: translate(3px, 0); }
+      45% { transform: translate(0, -3px); }
+      60% { transform: translate(0, 3px); }
+      75% { transform: translate(-2px, 2px); }
+      90% { transform: translate(2px, -2px); }
+      100% { transform: translate(0, 0); }
+    }
+    
+    @keyframes textFlicker {
+      0% { opacity: 1; }
+      50% { opacity: 0.8; }
+      100% { opacity: 1; }
+    }
+    
+    @keyframes linkGlitch {
+      0% { transform: translate(0); }
+      20% { transform: translate(-2px, 2px); }
+      40% { transform: translate(2px, -2px); }
+      60% { transform: translate(-2px, -2px); }
+      80% { transform: translate(2px, 2px); }
+      100% { transform: translate(0); }
+    }
+    
+    @keyframes randomFlicker {
+      0% { opacity: 0.1; }
+      50% { opacity: 0.3; }
+      100% { opacity: 0.1; }
+    }
+    
+    /* Responsive design */
+    @media (max-width: 768px) {
+      .glitch-404 {
+        font-size: 4rem;
+      }
+      
+      .error-message {
+        font-size: 1.2rem;
+        padding: 0 1rem;
+      }
+      
+      .nav-links {
+        flex-direction: column;
+        gap: 0.5rem;
+        padding: 0 1rem;
+      }
+      
+      .glitch-link {
+        padding: 0.6rem 1rem;
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="glitch-container">
+    <!-- Background noise patterns -->
+    <div class="noise-bg"></div>
+    
+    <!-- Chaos overlay -->
+    <div class="chaos-overlay"></div>
+    
+    <!-- Scan lines -->
+    <div class="scan-lines"></div>
+    
+    <!-- Main 404 text -->
+    <div class="glitch-404">
+      404
+      <!-- Glitch layers -->
+      <div class="layer1">404</div>
+      <div class="layer2">404</div>
+    </div>
+    
+    <!-- Error message -->
+    <div class="error-message">
+      SYSTEM ERROR - PAGE NOT FOUND
+    </div>
+    
+    <!-- Navigation links -->
+    <div class="nav-links">
+      <a href="/urban-ph/" class="glitch-link">RETURN HOME</a>
+      <a href="/urban-ph/events" class="glitch-link">VIEW EVENTS</a>
+    </div>
+    
+    <!-- Random glitch blocks -->
+    <div class="glitch-block block1"></div>
+    <div class="glitch-block block2"></div>
+    <div class="glitch-block block3"></div>
+    <div class="glitch-block block4"></div>
+    <div class="glitch-block block5"></div>
+    <div class="glitch-block block6"></div>
+  </div>
+  
+  <script>
+    // Add some random digital noise effect
+    setInterval(() => {
+      const blocks = document.querySelectorAll('.glitch-block');
+      blocks.forEach(block => {
+        if (Math.random() > 0.7) {
+          block.style.opacity = Math.random() * 0.5;
+          block.style.left = (Math.random() * 100) + '%';
+          block.style.top = (Math.random() * 100) + '%';
+        }
+      });
+    }, 200);
+    
+    // Auto-redirect after 10 seconds
+    setTimeout(() => {
+      window.location.href = '/urban-ph/';
+    }, 10000);
+  </script>
+</body>
+</html>
