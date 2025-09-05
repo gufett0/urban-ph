@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Redirecting…</title>
+    <script>
+      (function () {
+        // Your repo base, e.g. "/urban-ph/"
+        var base = '/urban-ph/';
+        var l = window.location;
+
+        // Only rewrite if the request is within your repo base.
+        if (l.pathname.indexOf(base) !== 0) return;
+
+        // Strip the base and keep everything else.
+        var rest = l.pathname.slice(base.length); // e.g. "events"
+        var search = l.search || '';
+        var hash = l.hash || '';
+
+        // Encode original path+query+hash into ?~<encoded>
+        var encoded = encodeURIComponent('/' + rest + search + hash);
+        var target = base + '?~' + encoded;
+
+        l.replace(target);
+      })();
+    </script>
+    <noscript>Enable JavaScript to proceed.</noscript>
+  </head>
+  <body></body>
+</html>
