@@ -47,6 +47,31 @@ const router = createBrowserRouter([
 });
 
 
+// Aggiungi questo PRIMA del ReactDOM.createRoot in main.jsx
+
+// Viewport height fix per browser che non supportano svh
+if (!CSS.supports('height', '100svh')) {
+  const setVh = () => {
+    const vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty('--vh', `${vh}px`);
+  };
+
+  setVh();
+  let timeout;
+  window.addEventListener('resize', () => {
+    clearTimeout(timeout);
+    timeout = setTimeout(setVh, 100);
+  });
+
+  // Aggiungi fallback al CSS
+  const style = document.createElement('style');
+  style.textContent = `
+    .min-h-screen { min-height: calc(var(--vh, 1vh) * 100) !important; }
+    .h-screen-stable { height: calc(var(--vh, 1vh) * 100) !important; }
+  `;
+  document.head.appendChild(style);
+}
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <PayPalScriptProvider options={paypalOptions}>

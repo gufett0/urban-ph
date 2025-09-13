@@ -31,7 +31,7 @@ function CelebratoryToast({ isVisible, onComplete, message = "Booking Confirmed!
     if (isVisible) {
       const timer = setTimeout(() => {
         onComplete?.();
-      }, 10000);
+      }, 8000);
 
       return () => clearTimeout(timer);
     }
