@@ -16,9 +16,9 @@ body {
 }
 
 /* Dynamic viewport height dove supportato */
-@supports (height: 100dvh) {
+@supports (height: 100svh) {
   :root {
-    --viewport-height: 100dvh;
+    --viewport-height: 100svh;
   }
 }
 
@@ -99,15 +99,8 @@ body, #root {
 
 /* AGGIUNGI dopo le regole esistenti per mobile: */
 @media (max-width: 768px) and (hover: none) and (pointer: coarse) {
-  /* Previeni il re-render durante le transizioni della barra browser */
-  html {
-    height: 100vh;
-    height: 100dvh; /* Dynamic viewport dove supportato */
-  }
   
-  /* Stabilizza i componenti durante il viewport resize */
   .min-h-screen {
-    height: 100vh !important;
-    height: 100dvh !important;
+    min-height: var(--viewport-height);
   }
 }
