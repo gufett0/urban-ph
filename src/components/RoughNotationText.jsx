@@ -1,17 +1,17 @@
 import { useEffect, useRef, useState } from 'react';
 import { annotate } from 'rough-notation';
 
-const RoughNotationText = ({ 
-  children, 
-  type = 'highlight', 
-  color = '#8B5CF6', 
-  animate = true, 
+const RoughNotationText = ({
+  children,
+  type = 'highlight',
+  color = '#8B5CF6',
+  animate = true,
   animationDelay = 0,
   strokeWidth = 2,
   className = '',
   disabled = false,
   trigger, // New prop to force re-render
-  ...props 
+  ...props
 }) => {
   const elementRef = useRef(null);
   const annotationRef = useRef(null);
@@ -22,12 +22,24 @@ const RoughNotationText = ({
   // Detect mobile screen size
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768); // md breakpoint
+      const newIsMobile = window.innerWidth < 768;
+      setIsMobile(prev => prev !== newIsMobile ? newIsMobile : prev);
     };
-    
+
     checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+
+    // Debounce per evitare troppi re-render durante il resize
+    let timeoutId;
+    const debouncedCheckMobile = () => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(checkMobile, 150);
+    };
+
+    window.addEventListener('resize', debouncedCheckMobile);
+    return () => {
+      window.removeEventListener('resize', debouncedCheckMobile);
+      clearTimeout(timeoutId);
+    };
   }, []);
 
   // Get mobile-optimized settings
@@ -50,55 +62,55 @@ const RoughNotationText = ({
 
 
 
-useEffect(() => {
-  const el = elementRef.current;
-  // Clean up any previous annotation
-  if (annotationRef.current) {
-    try { annotationRef.current.remove(); } catch {}
-    annotationRef.current = null;
-  }
-
-  // Bail if no element, disabled, or not triggered
-  if (!el || disabled || !trigger) return;
-
-  const settings = getMobileSettings();
-  let raf1 = 0, raf2 = 0, showTimer = 0;
-
-  // force layout
-  void el.getBoundingClientRect();
-
-  raf1 = requestAnimationFrame(() => {
-    raf2 = requestAnimationFrame(() => {
-      const ann = annotate(el, {
-        type,
-        color,
-        strokeWidth: settings.strokeWidth,
-        animate,
-        animationDuration: settings.animationDuration,
-        padding: settings.padding
-      });
-      annotationRef.current = ann;
-      showTimer = window.setTimeout(() => {
-        ann.show();
-      }, animationDelay || 0);
-    });
-  });
-
-  return () => {
-    cancelAnimationFrame(raf1);
-    cancelAnimationFrame(raf2);
-    clearTimeout(showTimer);
+  useEffect(() => {
+    const el = elementRef.current;
+    // Clean up any previous annotation
     if (annotationRef.current) {
-      try { annotationRef.current.remove(); } catch {}
+      try { annotationRef.current.remove(); } catch { }
       annotationRef.current = null;
     }
-  };
-}, [trigger, disabled, type, color, animate, animationDelay, strokeWidth, children, isMobile]);
+
+    // Bail if no element, disabled, or not triggered
+    if (!el || disabled || !trigger) return;
+
+    const settings = getMobileSettings();
+    let raf1 = 0, raf2 = 0, showTimer = 0;
+
+    // force layout
+    void el.getBoundingClientRect();
+
+    raf1 = requestAnimationFrame(() => {
+      raf2 = requestAnimationFrame(() => {
+        const ann = annotate(el, {
+          type,
+          color,
+          strokeWidth: settings.strokeWidth,
+          animate,
+          animationDuration: settings.animationDuration,
+          padding: settings.padding
+        });
+        annotationRef.current = ann;
+        showTimer = window.setTimeout(() => {
+          ann.show();
+        }, animationDelay || 0);
+      });
+    });
+
+    return () => {
+      cancelAnimationFrame(raf1);
+      cancelAnimationFrame(raf2);
+      clearTimeout(showTimer);
+      if (annotationRef.current) {
+        try { annotationRef.current.remove(); } catch { }
+        annotationRef.current = null;
+      }
+    };
+  }, [trigger, disabled, type, color, animate, animationDelay, strokeWidth, children, isMobile]);
 
 
   return (
-    <span 
-      ref={elementRef} 
+    <span
+      ref={elementRef}
       className={className}
       style={{
         display: isMobile ? 'inline' : undefined,
