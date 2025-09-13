@@ -47,29 +47,32 @@ const router = createBrowserRouter([
 });
 
 
-// Aggiungi questo PRIMA del ReactDOM.createRoot in main.jsx
-
-// Viewport height fix per browser che non supportano svh
 if (!CSS.supports('height', '100svh')) {
-  const setVh = () => {
-    const vh = window.innerHeight * 0.01;
-    document.documentElement.style.setProperty('--vh', `${vh}px`);
+  // Calcola l'altezza con la barra sempre visibile
+  const calculateStableVh = () => {
+    // Prendi l'altezza iniziale (di solito con barra visibile)
+    const vh = window.innerHeight;
+    // Non aggiornare se lo schermo diventa più alto (barra che scompare)
+    const root = document.documentElement;
+    const currentVh = parseInt(root.style.getPropertyValue('--stable-vh')) || vh;
+    
+    // Usa sempre il valore più piccolo (barra visibile)
+    if (!root.style.getPropertyValue('--stable-vh') || vh < currentVh) {
+      root.style.setProperty('--stable-vh', `${vh}px`);
+    }
   };
-
-  setVh();
-  let timeout;
+  
+  // Setta inizialmente
+  calculateStableVh();
+  
+  // Aggiorna solo su resize significativo (rotazione schermo)
+  let lastWidth = window.innerWidth;
   window.addEventListener('resize', () => {
-    clearTimeout(timeout);
-    timeout = setTimeout(setVh, 100);
+    if (Math.abs(window.innerWidth - lastWidth) > 100) {
+      lastWidth = window.innerWidth;
+      calculateStableVh();
+    }
   });
-
-  // Aggiungi fallback al CSS
-  const style = document.createElement('style');
-  style.textContent = `
-    .min-h-screen { min-height: calc(var(--vh, 1vh) * 100) !important; }
-    .h-screen-stable { height: calc(var(--vh, 1vh) * 100) !important; }
-  `;
-  document.head.appendChild(style);
 }
 
 ReactDOM.createRoot(document.getElementById('root')).render(
