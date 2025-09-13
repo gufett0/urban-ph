@@ -2,80 +2,47 @@
 @tailwind components;
 @tailwind utilities;
 
-/* 1. SETUP BASE - Niente di più, niente di meno */
-html {
-  scroll-behavior: smooth;
-  /* Usa small viewport height (svh) come base stabile */
-  height: 100vh;
-  height: 100svh;
+/* SOLUZIONE DRASTICA - Blocca completamente lo scroll del browser */
+html, body {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
 }
 
-body {
-  @apply font-sans;
-  min-height: 100vh;
-  min-height: 100svh;
-}
-
-/* 2. ROOT E MAIN APP - Layout stabile */
 #root {
-  min-height: 100vh;
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
 }
 
-/* 3. UTILITY CLASS OVERRIDE - La chiave è qui */
-@layer utilities {
-  /* Sovrascrive il .min-h-screen di Tailwind con small viewport */
-  .min-h-screen {
-    min-height: 100vh;
-    min-height: 100svh;
-  }
-  
-  /* Classe aggiuntiva per layout che vogliono usare tutto lo spazio */
-  .h-screen-stable {
-    height: 100vh;
-    height: 100svh;
-  }
-  
-  /* Classe per elementi che devono adattarsi dinamicamente */
-  .h-screen-dynamic {
-    height: 100vh;
-    height: 100dvh;
-  }
-}
-
-/* 4. SAFE AREAS per iOS (mantieni per i componenti fixed) */
-.safe-area-bottom {
+/* Safe areas per iOS */
+#root {
+  padding-top: env(safe-area-inset-top);
   padding-bottom: env(safe-area-inset-bottom);
 }
 
-/* 5. PERFORMANCE - GPU acceleration solo dove serve */
+/* Override Tailwind utilities per consistenza */
+@layer utilities {
+  .min-h-screen {
+    min-height: 100%;
+  }
+  
+  .h-screen {
+    height: 100%;
+  }
+}
+
+/* GPU acceleration dove serve */
 .animated-element, 
 .event-card, 
 .info-section {
-  will-change: transform;
   transform: translateZ(0);
-}
-
-/* 6. iOS SPECIFIC - Minimal e mirato */
-@supports (-webkit-touch-callout: none) {
-  /* Solo per Safari iOS */
-  body {
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior-y: contain;
-  }
-}
-
-/* 7. MOBILE ONLY - Semplificato */
-@media (max-width: 768px) {
-  /* Transizioni più rapide su mobile */
-  .transition-all {
-    transition-duration: 200ms !important;
-  }
-  
-  /* Previeni il bounce scroll su iOS */
-  html, body {
-    overscroll-behavior: none;
-  }
 }
