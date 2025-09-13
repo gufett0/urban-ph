@@ -107,7 +107,7 @@ function Hero({ user, onSignInClick }) {
   };
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center text-white overflow-hidden">
+    <section className="relative h-screen-stable flex items-center justify-center text-white overflow-hidden">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <img
@@ -378,15 +378,15 @@ function Hero({ user, onSignInClick }) {
                 </Link>
               </motion.div>
               <motion.button
-  onClick={scrollToContactUs}
-  className="text-[#FFFADE] hover:text-white transition-colors duration-200 text-lg font-medium text-left"
-  variants={{
-    open: { y: 0, opacity: 1, transition: { y: { stiffness: 1000, velocity: -100 } } },
-    closed: { y: 50, opacity: 0, transition: { y: { stiffness: 1000 } } }
-  }}
->
-  .contactUs
-</motion.button>
+                onClick={scrollToContactUs}
+                className="text-[#FFFADE] hover:text-white transition-colors duration-200 text-lg font-medium text-left"
+                variants={{
+                  open: { y: 0, opacity: 1, transition: { y: { stiffness: 1000, velocity: -100 } } },
+                  closed: { y: 50, opacity: 0, transition: { y: { stiffness: 1000 } } }
+                }}
+              >
+                .contactUs
+              </motion.button>
               {user && isAdmin && (
                 <motion.div
                   variants={{

@@ -2,105 +2,80 @@
 @tailwind components;
 @tailwind utilities;
 
+/* 1. SETUP BASE - Niente di più, niente di meno */
 html {
   scroll-behavior: smooth;
+  /* Usa small viewport height (svh) come base stabile */
+  height: 100vh;
+  height: 100svh;
 }
 
 body {
   @apply font-sans;
+  min-height: 100vh;
+  min-height: 100svh;
 }
 
-/* Fix semplice per viewport dinamico mobile */
-:root {
-  --viewport-height: 100vh;
+/* 2. ROOT E MAIN APP - Layout stabile */
+#root {
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
 }
 
-/* Dynamic viewport height dove supportato */
-@supports (height: 100svh) {
-  :root {
-    --viewport-height: 100svh;
-  }
-}
-
-/* Applica l'altezza dinamica - SENZA !important */
-.min-h-screen {
-  min-height: var(--viewport-height);
-}
-
-/* iOS specific: Momentum scrolling and viewport stabilization */
-@supports (-webkit-overflow-scrolling: touch) {
-  html {
-    height: -webkit-fill-available;
-  }
-  body {
-    min-height: -webkit-fill-available;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-  #root {
-    min-height: -webkit-fill-available;
-    display: flex;
-    flex-direction: column;
-  }
-}
-
-/* Dynamic height fix for iOS (will be set via JS) */
-body, #root {
-  height: auto !important; /* Override if JS sets it */
-}
-
-/* GPU acceleration for animations (add to EventCard/Info wrappers) */
-.animated-element, .event-card, .info-section {
-  will-change: transform, opacity;
-  backface-visibility: hidden; /* Extra for iOS jank */
-  transform: translate3d(0, 0, 0); /* Force hardware acceleration */
-}
-
-/* Ottimizzazioni mobile leggere */
-@media (max-width: 768px) {
-  .transition-height {
-    transition-duration: 200ms !important; /* Shorter for smoother feel */
-  }
-}
-
-/* Stabilizza il contenuto durante lo scroll su mobile */
-@media (max-width: 768px) and (hover: none) and (pointer: coarse) {
-  /* Riduce il jank durante gli scroll rapidi */
-  * {
-    -webkit-backface-visibility: hidden;
-    backface-visibility: hidden;
-  }
-  
-  /* Stabilizza la sezione Hero che probabilmente causa il glitch principale */
-  .relative.min-h-screen {
-    height: var(--viewport-height);
-    min-height: var(--viewport-height);
-    overflow: hidden; /* Previene scroll inaspettati */
-  }
-  
-  /* Forza una stabilità maggiore per gli elementi posizionati in modo assoluto */
-  .absolute {
-    will-change: auto; /* Riduce l'overhead GPU se non necessario */
-  }
-}
-
-/* Migliora la gestione dello scroll su iOS */
-@media (max-width: 768px) {
-  html {
-    /* Stabilizza l'altezza durante le transizioni della barra del browser */
-    height: var(--viewport-height);
-    height: 100%;
-  }
-  
-  body {
-    overscroll-behavior-y: none;
-  }
-}
-
-/* AGGIUNGI dopo le regole esistenti per mobile: */
-@media (max-width: 768px) and (hover: none) and (pointer: coarse) {
-  
+/* 3. UTILITY CLASS OVERRIDE - La chiave è qui */
+@layer utilities {
+  /* Sovrascrive il .min-h-screen di Tailwind con small viewport */
   .min-h-screen {
-    min-height: var(--viewport-height);
+    min-height: 100vh;
+    min-height: 100svh;
+  }
+  
+  /* Classe aggiuntiva per layout che vogliono usare tutto lo spazio */
+  .h-screen-stable {
+    height: 100vh;
+    height: 100svh;
+  }
+  
+  /* Classe per elementi che devono adattarsi dinamicamente */
+  .h-screen-dynamic {
+    height: 100vh;
+    height: 100dvh;
+  }
+}
+
+/* 4. SAFE AREAS per iOS (mantieni per i componenti fixed) */
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* 5. PERFORMANCE - GPU acceleration solo dove serve */
+.animated-element, 
+.event-card, 
+.info-section {
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+/* 6. iOS SPECIFIC - Minimal e mirato */
+@supports (-webkit-touch-callout: none) {
+  /* Solo per Safari iOS */
+  body {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+  }
+}
+
+/* 7. MOBILE ONLY - Semplificato */
+@media (max-width: 768px) {
+  /* Transizioni più rapide su mobile */
+  .transition-all {
+    transition-duration: 200ms !important;
+  }
+  
+  /* Previeni il bounce scroll su iOS */
+  html, body {
+    overscroll-behavior: none;
   }
 }
