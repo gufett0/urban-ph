@@ -2,75 +2,87 @@
 @tailwind components;
 @tailwind utilities;
 
-/* TRUCCO: Body non scrolla = barra resta fissa */
+/* SOLUZIONE OTTIMALE: Barra sempre visibile + Elastic scroll preservato */
+
 html {
-  height: 100%;
+  scroll-behavior: smooth;
+  /* Usa SEMPRE small viewport (barra visibile) */
+  height: 100svh;
+  /* Fallback per browser vecchi */
+  height: 100vh;
 }
 
 body {
   @apply font-sans;
-  height: 100%;
-  overflow: hidden; /* Body non scrolla */
-  position: fixed;
-  width: 100%;
+  /* Forza sempre small viewport */
+  min-height: 100svh;
+  min-height: 100vh;
+  /* Mantieni elastic scroll! */
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: auto; /* Elastic scroll preservato */
 }
 
-/* Root diventa il container scrollabile con elastic scroll */
 #root {
-  height: 100%;
-  overflow-y: auto;
-  overflow-x: hidden;
-  -webkit-overflow-scrolling: touch; /* Elastic scroll iOS */
-  overscroll-behavior-y: contain; /* Mantiene bounce nel container */
-  
-  /* Safe areas */
-  padding-top: env(safe-area-inset-top);
-  padding-bottom: env(safe-area-inset-bottom);
+  /* Layout stabile con barra sempre considerata */
+  min-height: 100svh;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
-/* Trick per ricreare l'elastic scroll effect su iOS */
-@supports (-webkit-touch-callout: none) {
-  #root {
-    /* Ricrea il bounce scroll */
-    -webkit-overflow-scrolling: touch;
-  }
-  
-  /* Aggiungi un "finto" overscroll al top e bottom */
-  #root::before,
-  #root::after {
-    content: '';
-    display: block;
-    height: 1px;
-    margin: -1px 0;
-  }
-}
-
-/* Override utilities per funzionare col nuovo layout */
+/* Override delle utility Tailwind per usare sempre svh */
 @layer utilities {
   .min-h-screen {
-    min-height: 100%;
+    /* Forza small viewport ovunque */
+    min-height: 100svh !important;
+    min-height: 100vh !important; /* fallback */
   }
   
   .h-screen {
-    height: 100%;
+    /* Altezza fissa con barra visibile */
+    height: 100svh !important;
+    height: 100vh !important; /* fallback */
   }
+}
+
+/* Fallback JavaScript per browser che non supportano svh */
+@supports not (height: 100svh) {
+  :root {
+    /* Sarà settato via JS in main.jsx */
+    --stable-vh: 100vh;
+  }
+  
+  .min-h-screen {
+    min-height: var(--stable-vh) !important;
+  }
+  
+  .h-screen {
+    height: var(--stable-vh) !important;
+  }
+}
+
+/* Safe areas per iOS (per elementi fixed) */
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
 /* Performance */
 .animated-element, 
 .event-card, 
 .info-section {
+  will-change: transform;
   transform: translateZ(0);
-}
-
-/* Fix per elementi position:fixed dentro #root */
-.fixed {
-  position: absolute; /* Cambia fixed in absolute dentro il container */
 }
 
 /* Mobile optimizations */
 @media (max-width: 768px) {
+  /* Transizioni rapide */
   .transition-all {
     transition-duration: 200ms !important;
+  }
+  
+  /* Stabilizza elementi durante scroll */
+  * {
+    -webkit-tap-highlight-color: transparent;
   }
 }
