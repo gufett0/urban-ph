@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Redirecting…</title>
+    <script>
+      (function () {
+        // Per dominio custom (urbanph.it) - redirect direttamente alla root
+        var l = window.location;
+        var rest = l.pathname.slice(1); // rimuovi il "/" iniziale
+        var search = l.search || '';
+        var hash = l.hash || '';
+
+        // Codifica il path originale in ?~<encoded>
+        var encoded = encodeURIComponent('/' + rest + search + hash);
+        var target = '/?~' + encoded;
+
+        l.replace(target);
+      })();
+    </script>
+    <noscript>Enable JavaScript to proceed.</noscript>
+  </head>
+  <body></body>
+</html>
